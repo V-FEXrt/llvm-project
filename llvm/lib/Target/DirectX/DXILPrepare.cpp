@@ -14,6 +14,7 @@
 #include "DXILResourceAnalysis.h"
 #include "DXILShaderFlags.h"
 #include "DirectX.h"
+//#include "DirectXIRPasses/LateValidation.h"
 #include "DirectXIRPasses/PointerTypeAnalysis.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/SmallVector.h"
@@ -240,6 +241,8 @@ public:
         }
       }
     }
+//    if (LateValidation::run(M))
+//        return true;
     // Remove flags not for DXIL.
     cleanModuleFlags(M);
     return true;

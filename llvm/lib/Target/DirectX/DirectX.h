@@ -89,6 +89,12 @@ void initializeDXILFinalizeLinkageLegacyPass(PassRegistry &);
 /// Pass to finalize linkage of functions.
 ModulePass *createDXILFinalizeLinkageLegacyPass();
 
+/// Initializer for DXILValidateResourceCounter pass.
+void initializeDXILValidateResourceCounterLegacyPass(PassRegistry &);
+
+/// Pass  to validate resource counter updates
+ModulePass *createDXILValidateResourceCounterLegacyPass();
+
 } // namespace llvm
 
 #endif // LLVM_LIB_TARGET_DIRECTX_DIRECTX_H

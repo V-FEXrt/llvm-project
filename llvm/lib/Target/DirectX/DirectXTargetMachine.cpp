@@ -16,6 +16,7 @@
 #include "DXILFlattenArrays.h"
 #include "DXILIntrinsicExpansion.h"
 #include "DXILOpLowering.h"
+#include "DirectXIRPasses/DXILValidateResourceCounter.h"
 #include "DXILPrettyPrinter.h"
 #include "DXILResourceAccess.h"
 #include "DXILResourceAnalysis.h"
@@ -62,6 +63,7 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeDirectXTarget() {
   initializeDXILResourceMDWrapperPass(*PR);
   initializeShaderFlagsAnalysisWrapperPass(*PR);
   initializeDXILFinalizeLinkageLegacyPass(*PR);
+  initializeDXILValidateResourceCounterLegacyPass(*PR);
 }
 
 class DXILTargetObjectFile : public TargetLoweringObjectFile {
@@ -100,6 +102,7 @@ public:
     DxilScalarOptions.ScalarizeLoadStore = true;
     addPass(createScalarizerPass(DxilScalarOptions));
     addPass(createDXILTranslateMetadataLegacyPass());
+    addPass(createDXILValidateResourceCounterLegacyPass());
     addPass(createDXILOpLoweringLegacyPass());
     addPass(createDXILPrepareModulePass());
   }

@@ -494,6 +494,10 @@ public:
   void print(raw_ostream &OS, DXILResourceTypeMap &DRTM,
              const DataLayout &DL) const;
 
+  // Resolves a use of a resource handle into the unique description of that
+  // resource
+  iterator findByUse(const Value *Key);
+
   friend class DXILResourceBindingAnalysis;
   friend class DXILResourceBindingWrapperPass;
 };

@@ -670,6 +670,34 @@ void ResourceBindingInfo::print(raw_ostream &OS, dxil::ResourceTypeInfo &RTI,
 
 //===----------------------------------------------------------------------===//
 
+SmallVector<dxil::ResourceBindingInfo>::iterator DXILBindingMap::findByUse(const Value *Key) {
+    const CallInst *CI = dyn_cast<CallInst>(Key);
+    if (!CI) {
+      // TODO: Any other cases to follow up the tree?
+      return Infos.end();
+    }
+
+    printf("fex: intrinsicID %d\n", CI->getIntrinsicID());
+
+    // Switch over CI->getInstrinsicID() too see which create intrinsic is being used
+    switch (CI->getIntrinsicID()) {
+    /*case Intrinsic::not_intrinsic: {
+      CI->getFunction()->get return instruction and walk
+      break;
+    }*/
+    case Intrinsic::dx_resource_handlefrombinding: {
+      break;
+    }
+    }
+
+    auto *It = find(CI);
+    if (It == Infos.end()) {
+       // TODO: When to recurse?
+    }
+
+    return It;
+}
+
 bool DXILResourceTypeMap::invalidate(Module &M, const PreservedAnalyses &PA,
                                      ModuleAnalysisManager::Invalidator &Inv) {
   // Passes that introduce resource types must explicitly invalidate this pass.

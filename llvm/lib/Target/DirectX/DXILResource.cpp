@@ -22,7 +22,7 @@
 using namespace llvm;
 using namespace llvm::dxil;
 
-template <typename T> void ResourceTable<T>::collect(Module &M) {
+template <typename T> void ResourceTable<T>::collect(const Module &M) {
   NamedMDNode *Entry = M.getNamedMetadata(MDName);
   if (!Entry || Entry->getNumOperands() == 0)
     return;
@@ -33,7 +33,7 @@ template <typename T> void ResourceTable<T>::collect(Module &M) {
   }
 }
 
-template <> void ResourceTable<ConstantBuffer>::collect(Module &M) {
+template <> void ResourceTable<ConstantBuffer>::collect(const Module &M) {
   NamedMDNode *Entry = M.getNamedMetadata(MDName);
   if (!Entry || Entry->getNumOperands() == 0)
     return;
@@ -50,7 +50,7 @@ template <> void ResourceTable<ConstantBuffer>::collect(Module &M) {
     CB.setSize(CBDL);
 }
 
-void Resources::collect(Module &M) {
+void Resources::collect(const Module &M) {
   UAVs.collect(M);
   CBuffers.collect(M);
 }
@@ -343,4 +343,24 @@ void Resources::printCBuffers(raw_ostream &OS) const { CBuffers.print(OS); }
 void Resources::dump() const {
   printCBuffers(dbgs());
   printUAVs(dbgs());
+}
+
+
+UniqueResourceKey::UniqueResourceKey(const llvm::Value *V)
+{
+    const llvm::CallInst *CI = dyn_cast<CallInst>(V);
+    if (!CI) {
+        printf("fex: TODO: V is not a CI\n");
+        return;
+    }
+
+    const Function* CreateHandleFunction = CI->getCalledFunction();
+    const StringRef CreateFunctionName = CreateHandleFunction->getName();
+
+    if (CreateFunctionName == "dx.op.createHandle") {
+        printf("fex: Handle is from createHandle\n");
+        return;
+    }
+
+    printf("fex: Unexpected creation function: %s\n", CreateFunctionName);
 }
